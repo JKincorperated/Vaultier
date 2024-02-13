@@ -11,16 +11,6 @@ import uk.co.jkinc.Vaultier.cmds.CmdRegistry;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-/*
-
-TODO:
- - Rate limit (~~IP~~/ Key) --
- - Allow Blocking users     --
- - Better error handling    --
- - Optimisations            --
-
- */
-
 public class Vaultier extends JavaPlugin {
     public static Economy econ = null;
     public static Permission perms = null;

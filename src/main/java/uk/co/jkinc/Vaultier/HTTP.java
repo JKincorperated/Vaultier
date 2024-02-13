@@ -107,7 +107,7 @@ public class HTTP {
 
                 Vaultier.database.db.Transactions.put(id, transaction);
 
-                String response = "{\"status\": \"created transaction\", \"id\": \"" + id + "\"}";
+                String response = "{\"error\": null, \"id\": \"" + id + "\"}";
                 exchange.sendResponseHeaders(200, response.length());
 
                 OutputStream os = exchange.getResponseBody();

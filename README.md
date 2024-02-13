@@ -59,7 +59,7 @@ To access the endpoint you should ask the server owner for where they have hoste
     "status": "SUCCESS"
   }
   ```
-  *Note: the `status` of a trans
+  *Note: the `status` of a transaction could be either `PENDING`, `SUCCESS` or `REJECTED`. If it could not be found then it timed out.
 ## Owner reference
 
 ### Configuring

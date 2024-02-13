@@ -1,0 +1,15 @@
+name: Vaultier
+main: uk.co.jkinc.Vaultier
+version: 1.0
+depend: [Vault]
+authors: [TXTiger]
+commands:
+  getapikey:
+    description: Generate an API key for scheming with OC or CC.
+    usage: /<command>
+  acceptTransfer:
+    description: Accept a transfer
+    usage: /<command> (transactionID)
+  denyTransfer:
+    description: Deny a transfer
+    usage: /<command> (transactionID)

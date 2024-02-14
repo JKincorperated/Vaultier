@@ -16,7 +16,7 @@ public class Vaultier extends JavaPlugin {
     public static Permission perms = null;
     public static boolean vaultPresent = false;
     public static Plugin plugin;
-    public static DatabaseManager database = new DatabaseManager();
+    public static DatabaseManager database;
     public HTTP server = new HTTP();
     Logger log;
     @Override
@@ -54,7 +54,8 @@ public class Vaultier extends JavaPlugin {
             log.warning("Failed to start HTTP server.");
         }
 
-        database.init(this);
+        database = new DatabaseManager(this);
+
     }
 
     @Override

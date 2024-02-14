@@ -1,5 +1,5 @@
 name: Vaultier
-main: uk.co.jkinc.Vaultier
+main: uk.co.jkinc.Vaultier.Vaultier
 version: 1.0
 depend: [Vault]
 authors: [TXTiger]

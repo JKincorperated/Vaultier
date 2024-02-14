@@ -1,17 +1,34 @@
 package uk.co.jkinc.Vaultier;
 
-import java.util.Random;
+import java.security.SecureRandom;
+import java.util.UUID;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class Key {
-    public static String genAPIKey() {
-        byte[] b = new byte[32];
-        new Random().nextBytes(b);
-        return "cc_" + bytesToHex(b);
+    public static String genAPIKey(UUID playerUUID) {
+        return JWT.create()
+                .withIssuer("Vaultier")
+                .withClaim("Player", playerUUID.toString())
+                .sign(Algorithm.ECDSA256(Vaultier.database.db.publicKey, Vaultier.database.db.privateKey));
     }
+
+    public static UUID verifyJWT(String jwt) {
+        // Verify a JWT
+        DecodedJWT _jwt = JWT.require(Algorithm.ECDSA256(Vaultier.database.db.publicKey, Vaultier.database.db.privateKey))
+                .withIssuer("Vaultier")
+                .build()
+                .verify(jwt);
+        return UUID.fromString(_jwt.getClaim("Player").asString());
+    }
+
     public static String genTransactionID() {
-        byte[] b = new byte[64];
-        new Random().nextBytes(b);
-        return "t_" + bytesToHex(b);
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[64];
+        random.nextBytes(bytes);
+        return "t_" + bytesToHex(bytes);
     }
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     public static String bytesToHex(byte[] bytes) {

@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.Objects;
-import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -59,19 +58,7 @@ public class HTTP {
 
                 // I almost forgot to do this...
 
-                UUID playerUUID;
-
-                playerUUID = Vaultier.database.db.APIKeys.get(Key.bytesToHex(Hash.hashAPIKey(apiKey)));
-                if (playerUUID == null) {
-                    String response = "{\"error\":\"Invalid API key\"}";
-                    exchange.sendResponseHeaders(400, response.length());
-                    OutputStream os = exchange.getResponseBody();
-                    os.write(response.getBytes());
-                    os.close();
-                    return;
-                }
-                Player Initator = Bukkit.getPlayer(playerUUID);
-
+                Player Initiator = Bukkit.getPlayer(Key.verifyJWT(apiKey));
 
                 if (obj.get("Player") == null || Bukkit.getPlayer(obj.get("Player").getAsString()) == null) {
                     String response = "{\"error\":\"Unknown or offline player\"}";
@@ -101,7 +88,7 @@ public class HTTP {
 
                 String id = Key.genTransactionID();
 
-                transaction.Payee = Initator;
+                transaction.Payee = Initiator;
                 transaction.Payer = Bukkit.getPlayer(obj.get("Player").getAsString());
                 transaction.value = AmountToTransfer;
 
@@ -120,7 +107,7 @@ public class HTTP {
                 Bukkit.getPlayer(obj.get("Player").getAsString()).spigot().sendMessage(new
                         TextComponent(""));
 
-                TextComponent message = new TextComponent( ChatColor.YELLOW + Initator.getDisplayName() +
+                TextComponent message = new TextComponent( ChatColor.YELLOW + Initiator.getDisplayName() +
                         ChatColor.AQUA + " is requesting " + ChatColor.YELLOW + "$" + AmountToTransfer +
                         ChatColor.AQUA + " from your account.");
 
@@ -169,6 +156,39 @@ public class HTTP {
                 os.write(response.getBytes());
                 os.close();
                 return;
+            }
+        });
+        server.createContext("/stat/", (HttpExchange exchange) -> {
+            String[] path = exchange.getRequestURI().getPath().split("/");
+            String toFind = path[path.length - 1];
+            Transaction transaction = Vaultier.database.db.Transactions.get(toFind);
+            if (transaction == null) {
+                String response = "{\"error\":\"Cannot find transaction\"}";
+                exchange.sendResponseHeaders(404, response.length());
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+                return;
+            }
+
+            if (transaction.state == Transaction.Status.PENDING) {
+                String response = "{\"error\":null, \"status\": \"PENDING\"}";
+                exchange.sendResponseHeaders(200, response.length());
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+            } else if (transaction.state == Transaction.Status.SUCCESS) {
+                String response = "{\"error\":null, \"status\": \"SUCCESS\"}";
+                exchange.sendResponseHeaders(200, response.length());
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+            } else if (transaction.state == Transaction.Status.REJECTED) {
+                String response = "{\"error\":null, \"status\": \"REJECTED\"}";
+                exchange.sendResponseHeaders(200, response.length());
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
             }
         });
         server.setExecutor(null);

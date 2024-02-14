@@ -27,10 +27,7 @@ public class GenAPIKey implements CommandExecutor {
         Player player = (Player)sender;
         UUID playerUUID = player.getUniqueId();
 
-        String apikey = Key.genAPIKey();
-
-        Vaultier.database.db.APIKeys.values().remove(playerUUID);
-        Vaultier.database.db.APIKeys.put(Key.bytesToHex(Hash.hashAPIKey(apikey)), playerUUID);
+        String apikey = Key.genAPIKey(playerUUID);
 
         ComponentBuilder cb = new ComponentBuilder(
                 apikey).bold(false);

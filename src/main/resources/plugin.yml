@@ -7,15 +7,25 @@ commands:
   getapikey:
     description: Generate an API key for scheming with OC or CC.
     usage: /<command>
+    permission: vaultier.interact
   acceptTransfer:
     description: Accept a transfer
     usage: /<command> (transactionID)
+    permission: vaultier.interact
   denyTransfer:
     description: Deny a transfer
     usage: /<command> (transactionID)
+    permission: vaultier.interact
   blockTransfer:
     description: Block a player from sending more transactions (do not use directly)
     usage: /<command> (transactionID)
+    permission: vaultier.interact
   unblocktransactions:
     description: Unblock a player to allow them to send transactions to your account.
     usage: /<command> (player)
+    permission: vaultier.interact
+
+permissions:
+  vaultier.interact:
+    description: Allows players to use vaultier commands.
+    default: true

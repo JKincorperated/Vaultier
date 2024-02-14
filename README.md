@@ -75,10 +75,10 @@ example.com/vaultier/<servername>/
 
 ## To Do
 
-| To Do                 | Status      |
-|-----------------------|-------------|
-| IP Rate limit         | Not Planned |
-| Key Rate limit        | ✔️          |
-| Allow Blocking users  | ✔️          |
-| Better error handling | Scheduled   |
-| Optimisations         | Scheduled   |
+| To Do                 | Status                          |
+|-----------------------|---------------------------------|
+| IP Rate limit         | Not Planned (Use reverse proxy) |
+| Key Rate limit        | ✔️                              |
+| Allow Blocking users  | ✔️                              |
+| Better error handling | Scheduled                       |
+| Optimisations         | Scheduled                       |

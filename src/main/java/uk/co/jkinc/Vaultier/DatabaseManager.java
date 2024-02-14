@@ -22,6 +22,8 @@ public class DatabaseManager {
             in.close();
             fileIn.close();
             db.Transactions = new HashMap<String, Transaction>();
+            db.RateLimits = new HashMap<String, Integer>();
+            db.currentTimePeriod = new Date().getTime() / (1000 * 60 * 30); // Reset rate limit every 30 minutes
             return;
         } catch (IOException ignored) {}
         catch (ClassNotFoundException j) {

@@ -72,6 +72,15 @@ public class HTTP {
 
                 Player Initiator = Bukkit.getPlayer(player);
 
+                if (!RateLimiter.ProcessRequest(apiKey)) {
+                    String response = "{\"error\":\"Rate Limited\"}";
+                    exchange.sendResponseHeaders(429, response.length());
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+                    return;
+                }
+
                 if (obj.get("Player") == null || Bukkit.getPlayer(obj.get("Player").getAsString()) == null) {
                     String response = "{\"error\":\"Unknown or offline player\"}";
                     exchange.sendResponseHeaders(400, response.length());
@@ -186,7 +195,7 @@ public class HTTP {
                 OutputStream os = exchange.getResponseBody();
                 os.write(response.getBytes());
                 os.close();
-                return;
+                e.printStackTrace();
             }
         });
         server.createContext("/stat/", (HttpExchange exchange) -> {

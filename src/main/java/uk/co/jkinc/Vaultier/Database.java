@@ -12,5 +12,7 @@ public class Database implements Serializable {
     public ECPublicKey publicKey;
     public HashMap<UUID, Integer> playerSequence;
     public HashMap<String, Boolean> blockedPlayers;
+    public transient HashMap<String, Integer> RateLimits;
+    public transient Long currentTimePeriod;
     public transient HashMap<String, Transaction> Transactions;
 }

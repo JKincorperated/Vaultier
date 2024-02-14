@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.Objects;
+import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -47,7 +48,7 @@ public class HTTP {
 
                 if (obj.get("Key") == null) {
                     String response = "{\"error\":\"Missing API key\"}";
-                    exchange.sendResponseHeaders(400, response.length());
+                    exchange.sendResponseHeaders(403, response.length());
                     OutputStream os = exchange.getResponseBody();
                     os.write(response.getBytes());
                     os.close();
@@ -58,7 +59,18 @@ public class HTTP {
 
                 // I almost forgot to do this...
 
-                Player Initiator = Bukkit.getPlayer(Key.verifyJWT(apiKey));
+                UUID player = Key.verifyJWT(apiKey);
+
+                if (player == null) {
+                    String response = "{\"error\":\"Bad API key\"}";
+                    exchange.sendResponseHeaders(403, response.length());
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+                    return;
+                }
+
+                Player Initiator = Bukkit.getPlayer(player);
 
                 if (obj.get("Player") == null || Bukkit.getPlayer(obj.get("Player").getAsString()) == null) {
                     String response = "{\"error\":\"Unknown or offline player\"}";
@@ -87,6 +99,17 @@ public class HTTP {
                 Transaction transaction = new Transaction();
 
                 String id = Key.genTransactionID();
+
+                String uid = Initiator.getUniqueId().toString() + Bukkit.getPlayer(obj.get("Player").getAsString()).getUniqueId().toString();
+
+                if (Vaultier.database.db.blockedPlayers.get(uid) != null && Vaultier.database.db.blockedPlayers.get(uid)) {
+                    String response = "{\"error\":\"Player blocked user\"}";
+                    exchange.sendResponseHeaders(403, response.length());
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+                    return;
+                }
 
                 transaction.Payee = Initiator;
                 transaction.Payer = Bukkit.getPlayer(obj.get("Player").getAsString());
@@ -126,11 +149,15 @@ public class HTTP {
 
                 TextComponent deny = new TextComponent( ChatColor.RED + " [ DENY ] ");
 
+                TextComponent block = new TextComponent( ChatColor.BLACK + " [ BLOCK ] ");
+
                 accept.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/accepttransfer " + id ) );
                 deny.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/denytransfer " + id ) );
+                block.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/blocktransfer " + id ) );
 
                 Bukkit.getPlayer(obj.get("Player").getAsString()).spigot().sendMessage(accept);
                 Bukkit.getPlayer(obj.get("Player").getAsString()).spigot().sendMessage(deny);
+                Bukkit.getPlayer(obj.get("Player").getAsString()).spigot().sendMessage(block);
 
                 Bukkit.getPlayer(obj.get("Player").getAsString()).spigot().sendMessage(new
                         TextComponent(""));
@@ -141,9 +168,13 @@ public class HTTP {
                 Bukkit.getScheduler().runTaskLater(Vaultier.plugin, new Runnable() {
                     @Override
                     public void run() {
-                        if (Vaultier.database.db.Transactions.get(id).state == Transaction.Status.PENDING) {
+                        if (Vaultier.database.db.Transactions.get(id).state == Transaction.Status.PENDING &&
+                                (Bukkit.getPlayer(obj.get("Player").getAsString()) != null)) {
+
                             Bukkit.getPlayer(obj.get("Player").getAsString()).spigot().sendMessage(new
                                     TextComponent(ChatColor.RED + "Request timed out"));
+                            Vaultier.database.db.Transactions.remove(id);
+                        } else if (Vaultier.database.db.Transactions.get(id).state == Transaction.Status.PENDING) {
                             Vaultier.database.db.Transactions.remove(id);
                         }
                     }

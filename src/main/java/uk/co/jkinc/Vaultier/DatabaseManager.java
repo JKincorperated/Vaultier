@@ -4,7 +4,9 @@ import java.io.*;
 import java.security.*;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class DatabaseManager {
     private transient File dataFolder;
@@ -29,6 +31,8 @@ public class DatabaseManager {
 
         db = new Database();
         db.Transactions = new HashMap<String, Transaction>();
+        db.playerSequence = new HashMap<UUID, Integer>();
+        db.blockedPlayers = new HashMap<String, Boolean>();
 
         try {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("EC");

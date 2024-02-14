@@ -13,3 +13,9 @@ commands:
   denyTransfer:
     description: Deny a transfer
     usage: /<command> (transactionID)
+  blockTransfer:
+    description: Block a player from sending more transactions (do not use directly)
+    usage: /<command> (transactionID)
+  unblocktransactions:
+    description: Unblock a player to allow them to send transactions to your account.
+    usage: /<command> (player)

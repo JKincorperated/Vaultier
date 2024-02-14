@@ -7,5 +7,7 @@ public class CmdRegistry {
         pluginInstance.getCommand("getapikey").setExecutor(new GenAPIKey());
         pluginInstance.getCommand("acceptTransfer").setExecutor(new AcceptTransfer());
         pluginInstance.getCommand("denyTransfer").setExecutor(new DenyTransfer());
+        pluginInstance.getCommand("blockTransfer").setExecutor(new BlockTransfer());
+        pluginInstance.getCommand("unblocktransactions").setExecutor(new UnblockPlayers());
     }
 }

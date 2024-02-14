@@ -75,7 +75,10 @@ example.com/vaultier/<servername>/
 
 ## To Do
 
-- Rate limit using ~~IP/~~ Key
-- Allow Blocking users
-- Better error handling
-- Optimisations
+| To Do                 | Status      |
+|-----------------------|-------------|
+| IP Rate limit         | Not Planned |
+| Key Rate limit        | In Progress |
+| Allow Blocking users  | Completed   |
+| Better error handling | Scheduled   |
+| Optimisations         | Scheduled   |

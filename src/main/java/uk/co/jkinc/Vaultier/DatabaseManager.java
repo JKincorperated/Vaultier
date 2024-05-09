@@ -13,7 +13,7 @@ public class DatabaseManager {
     public Database db;
 
     public DatabaseManager(Vaultier plugin) {
-        dataFolder = new File(plugin.getDataFolder(), "data"); // get folder "plugins/MyPlugin/data"
+        dataFolder = new File(plugin.getDataFolder(), "data");
         dataFolder.mkdirs(); // create folder if not exists
         try {
             FileInputStream fileIn = new FileInputStream(new File(dataFolder, "DB.ser"));

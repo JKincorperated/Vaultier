@@ -61,8 +61,10 @@ public class Vaultier extends JavaPlugin {
     @Override
     public void onDisable() {
         server.stopServer();
-        log.info("Saving DB...");
-        database.save();
+        if (database != null) {
+            log.info("Saving DB...");
+            database.save();
+        }
     }
 
     private boolean setupEconomy() {
